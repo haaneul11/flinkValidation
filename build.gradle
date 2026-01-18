@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(18)
+    }
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+
+
+    // Jackson for JSON processing
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+//    testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+    // Flink Core
+    implementation 'org.apache.flink:flink-streaming-java:1.17.0'
+    implementation 'org.apache.flink:flink-runtime:1.17.0'
+
+    implementation 'org.apache.flink:flink-clients:1.17.0'
+
+    // Flink Kafka Connector
+    implementation 'org.apache.flink:flink-connector-kafka:1.17.0'
+
+    // Optional : SLF4J for logging
+//    implementation 'org.slf4j:slf4j-api:2.0.9'
+//    runtimeOnly 'org.slf4j:slf4j-api:2.0.9'
+
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+    runtimeOnly 'ch.qos.logback:logback-classic:1.4.14'
+
+
+
+}
+
+test {
+    useJUnitPlatform()
+}
