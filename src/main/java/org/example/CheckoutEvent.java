@@ -10,7 +10,8 @@ public class CheckoutEvent {
     private String productId;
     private Integer quantity;
     private double totalPrice;
-    private String paymentId;
+    private String paymentId;  // 결제수단의 고유ID
+    private String paymentStatus;  // 결제 상태
 
     private boolean userValid;  // 존재 값이 있는지
     private boolean shippingInfoValid;  // 너무 길지 않은지
