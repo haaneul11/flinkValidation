@@ -21,11 +21,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-
-
     // Jackson for JSON processing
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
-//    testImplementation 'org.springframework.kafka:spring-kafka-test'
 
     // Flink Core
     implementation 'org.apache.flink:flink-streaming-java:1.17.0'
@@ -43,8 +40,10 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
 
-    runtimeOnly 'ch.qos.logback:logback-classic:1.4.14'
+    // http 호출
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 
+    runtimeOnly 'ch.qos.logback:logback-classic:1.4.14'
 
 
 }

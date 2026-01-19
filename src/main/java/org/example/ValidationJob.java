@@ -14,6 +14,11 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 
 import java.util.Properties;
@@ -135,10 +140,36 @@ public class ValidationJob {
         return CompletableFuture.supplyAsync(() -> shippingMasterId != null && !shippingMasterId.trim().isEmpty());
     }
 
-    private static CompletableFuture<Boolean> validateProductId(String productId, Integer quantity) {
+    private static CompletableFuture<Boolean> validateProductId(String productId, Integer orderQty) {
         // 재고 확인 로직
-        return CompletableFuture.supplyAsync(() -> productId != null && !productId.trim().isEmpty() && quantity > 0);
+//        return CompletableFuture.supplyAsync(() -> productId != null && !productId.trim().isEmpty() && quantity > 0);
+
+        return CompletableFuture.supplyAsync(() -> {
+            String inventoryValidationCheckUrl = "localhost:8802/inventory/products/" + productId + "/orderYn/?orderQty=" + orderQty;
+
+            try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+                HttpGet request = new HttpGet(inventoryValidationCheckUrl);
+                try (CloseableHttpResponse response = httpClient.execute(request)) {
+                    int statusCode = response.getStatusLine().getStatusCode();
+
+                    if(statusCode == 200) {
+                        String responseBody = EntityUtils.toString(response.getEntity());
+                        return Boolean.parseBoolean(responseBody);
+                    }
+                    else {
+                        System.out.println("API Error : " + statusCode + " : " + EntityUtils.toString(response.getEntity()));
+                        return Boolean.FALSE;
+                    }
+                }
+
+            }
+            catch(Exception e ){
+                System.out.println("Error to get response from inventory APIs : " + e.getMessage());
+                return Boolean.FALSE;
+            }
+        });
     }
+
 
     private static CompletableFuture<Boolean> validatePaymentId(String paymentId) {
         // 카드의 유효성 확인
